@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>www.Melvinshop.co.ke</title>
+
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+    overflow: hidden; /* Prevent double scrollbars */
+}
+
+/* Fixed header */
+.header-bar {
+    width: 100%;
+    background-color: #40739e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 72px;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 2px solid #2f3640;
+    z-index: 1000;
+}
+
+/* Back button */
+.header-bar a.back-btn {
+    position: absolute;
+    left: 20px;
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 20px;
+    border-radius: 5px;
+    background-color: #7f8c8d;
+    border: 1px solid #d4ac0d;
+}
+.header-bar a.back-btn:hover {
+    background-color: #e1b90f;
+}
+
+/* Search bar (right) */
+.header-bar input[type="text"] {
+    position: absolute;
+    right: 20px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: 1px solid #dcdde1;
+    font-size: 14px;
+}
+
+/* Container fills everything below the header */
+.container {
+    width: 100%;
+    height: calc(100vh - 72px);
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 72px;
+    left: 0;
+}
+
+/* Scrollable table wrapper fills entire screen */
+.table-wrapper {
+    height: 100%;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+}
+
+/* Table fills 100% viewport width */
+table {
+    width: 100vw;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border: 2px solid #40739e;
+}
+
+/* Sticky table header */
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #40739e;
+    color: white;
+    z-index: 900;
+    border-bottom: 2px solid #2f3640;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ccc;
+}
+
+tr:nth-child(even) {
+    background-color: #f1f2f6;
+}
+
+tfoot td {
+    font-weight: bold;
+    border-top: 2px solid #2f3640;
+}
+
+a {
+    color: #487eb0;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header-bar">
+    <a href="/" class="back-btn">Back to Dashboard</a>
+    PRICE PRODUCTS LIST 2025
+    <input type="text" placeholder="Search..." id="searchInput">
+</div>
+
+<div class="container">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Item</th>
+                    <th>Description</th>
+                    <th>Price per PC/KG</th>
+                    <th>Total Quantity</th>
+                    <th>Total Stock Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="tableBody">
+                {% for item in items %}
+                <tr>
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[1] }}</td>
+                    <td>{{ item[2] }}</td>
+                    <td>{{ "%.2f"|format(item[3]) }}</td>
+                    <td>{{ "%.2f"|format(item[4]) }}</td>
+                    <td>{{ "%.2f"|format(item[5]) }}</td>
+                    <td>
+                        <a href="/edit/{{ item[0] }}">Edit</a> |
+                        <a href="/delete/{{ item[0] }}" onclick="return confirm('Delete this item?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<script>
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('keyup', function () {
+    const filter = searchInput.value.toLowerCase();
+    const rows = document.querySelectorAll("#tableBody tr");
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+});
+</script>
+
+</body>
+</html>

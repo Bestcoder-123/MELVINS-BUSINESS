@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>www.Melvinshop.co.ke</title>
+<style>
+    body { font-family: Arial, sans-serif; background-color: #f5f6fa; margin: 0; padding: 0 20px; }
+    h1 { text-align: center; color: #2f3640; margin-top: 20px; }
+    .container { max-width: 1200px; margin: auto; }
+
+    /* Clock Styling */
+    .clock {
+        text-align: center;
+        font-size: 18px;
+        color: #40739e;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    /* Top buttons */
+    .top-left-buttons { display: flex; gap: 5px; margin: 10px 0 20px 0; flex-wrap: wrap; }
+    .top-left-buttons a { padding: 8px 15px; color: white; border-radius: 5px; text-decoration: none; font-weight: bold; }
+    .sales-btn { background-color: #40739e; }
+    .sales-today-btn { background-color: #44bd32; }
+    .price-list-btn { background-color: #f39c12; border: 2px solid #d35400; }
+    .statistics-btn { background-color: #e84118; }
+    .expiry-btn { background-color: #e67e22; }
+    .added-stock-btn { background-color: #8c7ae6; }
+    .price-btn { background-color: #ff69b4; border: 2px solid #ff85c1; color: white; }
+    .price-btn:hover { background-color: #ff85c1; }
+    .top-left-buttons a:hover { opacity: 0.9; }
+
+    .substitutes-btn { background-color: #9b59b6; color: white; border-radius: 5px; padding: 8px 15px; text-decoration: none; }
+    .substitutes-btn:hover { background-color: #8e44ad; }
+
+    /* Add Item Form */
+    .form-upload-wrapper {
+        display: flex; gap: 10px; justify-content: center; align-items: flex-end;
+        margin: 20px auto 40px auto; padding: 15px;
+        background-color: #ffffff; border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    form { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+    form label { display: flex; flex-direction: column; font-weight: bold; font-size: 14px; }
+    form input { padding: 8px; width: 150px; border-radius: 5px; border: 1px solid #ccc; margin-top: 5px; }
+    button { padding: 10px 20px; background-color: #44bd32; color: white; border: none; border-radius: 5px; cursor: pointer; height: 38px; }
+    button:hover { background-color: #4cd137; }
+    .upload-btn { padding: 8px 15px; background-color: #0097e6; color: white; border-radius: 5px; text-decoration: none; height: 38px; }
+    .upload-btn:hover { background-color: #00a8ff; }
+
+    /* Dashboard Additions */
+    .stats-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    .stat-card {
+    flex: 1;
+    min-width: 220px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    text-align: center;
+    transition: 0.3s;
+}
+.stat-card:hover { transform: scale(1.03); }
+.stat-card h3 { margin-bottom: 10px; color: #2f3640; }
+.stat-card p { font-size: 22px; font-weight: bold; margin: 0; }
+
+.blue { border-top: 5px solid #0097e6; }
+.green { border-top: 5px solid #44bd32; }
+.orange { border-top: 5px solid #f39c12; }
+.red { border-top: 5px solid #e84118; }
+.purple { border-top: 5px solid #9b59b6; } /* Old Total Stock Value Card */
+
+/* New light green card for Total Stock Value */
+.light-green {
+    background-color: #d4edda;  /* light green */
+    border-top: 5px solid #44bd32;  /* green accent */
+}
+.light-green h3, .light-green p {
+    color: #2f3640;  /* dark text for readability */
+}
+
+    /* Chart Area */
+    .chart-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    /* Recent Activity Table */
+    .recent-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .recent-table th {
+        background: #0097e6;
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+    .recent-table td {
+        padding: 10px;
+        border-bottom: 1px solid #f1f2f6;
+        font-size: 14px;
+    }
+    .recent-table tr:nth-child(even) { background: #f5f6fa; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>MELVINSHOP SELLING FOODSTUFFS AND UTENSILS</h1>
+    <div class="clock" id="clock"></div>
+
+    <!-- Navigation buttons -->
+    <div class="top-left-buttons">
+        <a class="sales-btn" href="/sales">SALE</a>
+        <a class="sales-today-btn" href="/sales-today">SALES TODAY</a>
+        <a class="price-list-btn" href="/price-list">PRODUCTS LIST</a>
+        <a class="statistics-btn" href="/statistics">STATISTICS</a>
+        <a class="expiry-btn" href="/expiry-status">EXPIRY STATUS</a>
+        <a href="/price-variation" class="price-btn">PRICE VARIATION</a>
+        <a class="added-stock-btn" href="/added-stock">STOCK ADDED</a>
+        <a class="substitutes-btn" href="/substitutes">SUBSTITUTES</a>
+    </div>
+
+    <!-- Add Item Form -->
+    <div class="form-upload-wrapper">
+        <form method="POST" action="/add">
+            <label>Item:<input type="text" name="item" required></label>
+            <label>Description:<input type="text" name="description"></label>
+            <label>Price per PC/KG:<input type="number" step="0.01" name="price_per_pc_or_kg" required></label>
+            <label>Total Quantity:<input type="number" step="0.01" name="total_quantity_available" required></label>
+            <button type="submit">Add Item</button>
+        </form>
+        <a class="upload-btn" href="/upload">Upload File</a>
+    </div>
+
+    <!-- Summary Cards -->
+<div class="stats-container">
+    <div class="stat-card blue">
+        <h3>Total Sales Today</h3>
+        <p>Ksh {{ total_sales_today or "0.00" }}</p>
+    </div>
+    <div class="stat-card green">
+        <h3>Items in Stock</h3>
+        <p>{{ total_items or "0" }}</p>
+    </div>
+    <div class="stat-card orange">
+        <h3>New Stock Added</h3>
+        <p>{{ new_stock_today or "0" }}</p>
+    </div>
+    <div class="stat-card red">
+        <h3>Expired Products</h3>
+        <p>{{ expired_products or "0" }}</p>
+    </div>
+    <div class="stat-card light-green">
+        <h3>Total Stock Value</h3>
+        <p>{{ total_stock_value or "0.00" }}</p>
+    </div>
+</div>
+
+    <!-- Chart -->
+    <div class="chart-container">
+        <h3 style="color:#2f3640; text-align:center;">Sales Trend (Last 7 Days)</h3>
+        <canvas id="salesChart" height="120"></canvas>
+    </div>
+
+    <!-- Recent Activity -->
+    <table class="recent-table">
+        <thead>
+            <tr><th>Date</th><th>Activity</th><th>Details</th></tr>
+        </thead>
+        <tbody>
+            {% for log in recent_logs %}
+            <tr>
+                <td>{{ log.date }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.details }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" style="text-align:center;">No recent activity.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('salesChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ sales_dates | safe }},
+        datasets: [{
+            label: 'Sales (KSH)',
+            data: {{ sales_values | safe }},
+            borderColor: '#0097e6',
+            backgroundColor: 'rgba(0,151,230,0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4,
+            pointBackgroundColor: '#0097e6'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
+    }
+});
+</script>
+
+<!-- Live Clock -->
+<script>
+function updateClock() {
+    const now = new Date();
+    const options = {
+        timeZone: 'Africa/Nairobi',
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true
+    };
+    document.getElementById('clock').textContent = now.toLocaleString('en-US', options) + " (EAT)";
+}
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+</body>
+</html>

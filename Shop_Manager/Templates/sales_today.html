@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>www.Melvinshop.co.ke</title>
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header container with flex and sticky position */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background-color: #40739e;
+    padding: 12px 20px;
+    border-radius: 8px 8px 0 0;
+    color: white;
+    border: 2px solid #2f3640;
+    z-index: 1000;
+}
+
+/* Centered header title */
+.header-container h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Back button */
+.back-btn {
+    padding: 8px 12px;
+    background-color: #7f8c8d;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    border: 1px solid #ff4da6;
+    z-index: 1100;
+}
+
+.back-btn:hover {
+    background-color: #ff85c1;
+}
+
+/* Search bar inside header */
+.search-bar {
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+}
+
+/* Table container fills remaining screen space */
+.table-container {
+    flex: 1; /* grow to fill remaining height */
+    overflow-y: auto;
+    margin: 0 20px 20px 20px;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border: 2px solid #40739e; 
+    border-radius: 0 0 8px 8px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+/* Freeze table header */
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #40739e;
+    color: white;
+    z-index: 500;
+    border-bottom: 2px solid #2f3640;
+}
+
+tr:nth-child(even) {
+    background-color: #f1f2f6;
+}
+
+/* Sticky table footer */
+tfoot td {
+    font-weight: bold;
+    border-top: 2px solid #2f3640;
+    background-color: #dcdde1;
+    position: sticky;
+    bottom: 0;
+    z-index: 400;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 600px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .header-container h1 {
+        position: static;
+        transform: none;
+        margin: 10px 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    .search-bar {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="header-container">
+    <a class="back-btn" href="{{ url_for('index') }}">Back to Dashboard</a>
+    <h1>SALES REALIZED TODAY</h1>
+    <input type="text" class="search-bar" placeholder="Search items..." id="itemSearch">
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity Sold</th>
+                <th>Unit Price (KSH)</th>
+                <th>Total Amount (KSH)</th>
+            </tr>
+        </thead>
+        <tbody id="salesTable">
+            {% for sale in sales %}
+            <tr>
+                <td>{{ sale[0] }}</td>
+                <td>{{ sale[1] }}</td>
+                <td>{{ "{:,.2f}".format(sale[2]) }}</td>
+                <td>{{ "{:,.2f}".format(sale[3]) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">TOTAL SALES (KSH)</td>
+                <td>{{ "{:,.2f}".format(total_sales) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+// Simple search functionality
+const searchInput = document.getElementById('itemSearch');
+const tableRows = document.querySelectorAll('#salesTable tr');
+
+searchInput.addEventListener('keyup', function() {
+    const filter = searchInput.value.toLowerCase();
+    tableRows.forEach(row => {
+        const itemName = row.cells[0].textContent.toLowerCase();
+        row.style.display = itemName.includes(filter) ? '' : 'none';
+    });
+});
+</script>
+
+</body>
+</html>

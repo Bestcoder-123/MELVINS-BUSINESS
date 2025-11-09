@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>www.Melvinshop.co.ke</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f6fa;
+}
+
+/* Full-screen container */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+/* Header row (Back button + search) */
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: #f5f6fa;
+    z-index: 50;
+    padding-bottom: 10px;
+}
+.back-btn {
+    display:inline-block;
+    background:#40739e;
+    color:white;
+    padding:8px 12px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+}
+.search-input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 250px;
+}
+
+/* Main dashboard title */
+.main-header {
+    text-align: center;
+    color: #2f3640;
+    margin: 0;
+    position: sticky;
+    top: 50px; /* below header-row */
+    background: #f5f6fa;
+    z-index: 40;
+    padding: 10px 0;
+}
+
+/* Card styling */
+.card {
+    background:white;
+    border-radius:10px;
+    padding:16px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    margin-top:16px;
+    flex-shrink: 0;
+}
+
+/* Table styling */
+.table-container {
+    max-height: 300px; /* scrollable height */
+    overflow-y: auto;
+    margin-top: 10px;
+}
+.table {
+    width:100%;
+    border-collapse:collapse;
+}
+.table th, .table td {
+    padding:10px;
+    text-align:left;
+}
+.table th {
+    background:#0097e6;
+    color:white;
+    position: sticky;
+    top: 0; /* sticks inside table container */
+    z-index: 20;
+}
+.table td {
+    border-bottom:1px solid #f1f2f6;
+    font-size:14px;
+}
+
+/* Charts grid */
+.charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+}
+@media (max-width:900px) {
+    .charts { grid-template-columns: 1fr; }
+}
+.small { font-size:13px; color:#666; text-align:center; }
+/* Chart canvas fill */
+canvas { width: 100% !important; height: auto !important; }
+</style>
+</head>
+<body>
+<div class="container">
+    <!-- Header row -->
+    <div class="header-row">
+        <a href="/" class="back-btn">← Back to Dashboard</a>
+        <input type="text" class="search-input" placeholder="Search activities..." onkeyup="filterTable()">
+    </div>
+
+    <!-- Main sticky dashboard header -->
+    <h1 class="main-header">System Activity & Statistics</h1>
+
+    <!-- Activity Log Card -->
+    <div class="card" style="flex: 1 1 auto; display: flex; flex-direction: column;">
+        <h3>Recent Activity Log</h3>
+        <div class="table-container">
+            <table class="table" id="activityTable">
+                <thead>
+                    <tr><th>Date & Time</th><th>Action</th><th>Details</th></tr>
+                </thead>
+                <tbody>
+                    {% for log in activities %}
+                    <tr>
+                        <td>{{ log.date }}</td>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.details }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" style="text-align:center;">No activities recorded yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="card charts">
+        <div>
+            <h3>Event Frequency</h3>
+            <canvas id="actionChart" height="220"></canvas>
+            <p class="small">Counts of different event types recorded in activities.</p>
+        </div>
+
+        <div>
+            <h3>Sales — Last 14 Days</h3>
+            <canvas id="salesChart" height="220"></canvas>
+            <p class="small">Total sales (KSH) per day for the past two weeks.</p>
+        </div>
+    </div>
+
+    <!-- Top Selling Items -->
+    <div class="card" style="margin-top:16px;">
+        <h3>Top Selling Items (by revenue)</h3>
+        <canvas id="topItemsChart" height="120"></canvas>
+    </div>
+</div>
+
+<script>
+const actionLabels = {{ action_labels | safe }};
+const actionCounts = {{ action_counts | safe }};
+
+const salesDates = {{ sales_dates | safe }};
+const salesValues = {{ sales_values | safe }};
+
+const topLabels = {{ top_labels | safe }};
+const topValues = {{ top_sales_values | safe }};
+
+/* Charts */
+new Chart(document.getElementById('actionChart'), {
+    type: 'bar',
+    data: { labels: actionLabels, datasets: [{ label: 'Number of events', data: actionCounts, backgroundColor: '#0097e6' }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+new Chart(document.getElementById('salesChart'), {
+    type: 'line',
+    data: { labels: salesDates, datasets: [{ label: 'Sales (KSH)', data: salesValues, borderColor: '#44bd32', backgroundColor: 'rgba(68,189,50,0.15)', fill: true, tension: 0.3, pointRadius: 3 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+new Chart(document.getElementById('topItemsChart'), {
+    type: 'bar',
+    data: { labels: topLabels, datasets: [{ label: 'Revenue (KSH)', data: topValues, backgroundColor: '#ff9f43' }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+/* Table search */
+function filterTable() {
+    const input = document.querySelector('.search-input').value.toLowerCase();
+    const rows = document.querySelectorAll('#activityTable tbody tr');
+    rows.forEach(row => {
+        row.style.display = Array.from(row.cells).some(cell => 
+            cell.textContent.toLowerCase().includes(input)
+        ) ? '' : 'none';
+    });
+}
+</script>
+</body>
+</html>

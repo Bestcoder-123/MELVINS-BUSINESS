@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>www.Melvinshop.co.ke</title>
+<style>
+    body { 
+        font-family: Arial, sans-serif; 
+        background-color: #f5f6fa; 
+        margin: 0; 
+        padding: 0 20px; 
+    }
+    .container { max-width: 1200px; margin: auto; }
+    .flash-message { color: #e84118; text-align: center; margin: 10px 0; }
+
+    /* Top bar */
+    .top-bar { 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        background-color: #40739e; 
+        padding: 10px 20px;
+        border-radius: 8px 8px 0 0; 
+        color: white;
+        border-bottom: 2px solid #2f3640; 
+        position: sticky;
+        top: 0; /* main header sticks to top */
+        z-index: 3;
+    }
+    .back-link { 
+        padding: 6px 12px; 
+        background-color: #7f8c8d; 
+        border-radius: 5px; 
+        text-decoration: none; 
+        white-space: nowrap;
+        font-size: 14px;
+        color: white;
+    }
+    .back-link:hover { background-color: #ff85c1; }
+    .header-title { 
+        flex: 1; 
+        text-align: center; 
+        margin: 0; 
+        color: white; 
+        font-size: 20px; 
+        font-weight: bold;
+    }
+    #search-input { 
+        padding:5px 10px; 
+        border-radius:5px 0 0 5px; 
+        border:none; 
+        outline:none;
+    }
+    #search-btn {
+        padding:6px 12px; 
+        border:none; 
+        border-radius:0 5px 5px 0; 
+        background-color:#44bd32; 
+        color:white; 
+        cursor:pointer;
+    }
+
+    /* Table styling */
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        background-color: #ffffff; 
+        margin-top: 10px;
+        border: 2px solid #40739e; 
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    th, td { 
+        padding: 12px 10px; 
+        text-align: left; 
+        border: 1px solid #dcdde1; 
+    }
+    th { 
+        background-color: #40739e; 
+        color: white; 
+        border-bottom: 2px solid #2f3640; 
+        position: sticky;
+        top: 50px; /* offset below top-bar height */
+        z-index: 2;
+    }
+    tr:nth-child(even) { background-color: #f1f2f6; }
+
+    input[type="number"] { width: 80px; padding: 5px; margin-right: 5px; border-radius: 5px; border: 1px solid #ccc; }
+    button { padding: 6px 12px; background-color: #44bd32; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #4cd137; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <a class="back-link" href="/">← Back to Dashboard</a>
+        <h1 class="header-title">MELVINSHOP LIMITED SALE LIST</h1>
+
+        <!-- Search form -->
+        <input type="text" id="search-input" placeholder="Search items...">
+        <button id="search-btn">Search</button>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-message">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Table -->
+    <table id="items-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Item</th>
+                <th>Description</th>
+                <th>Price per PC/KG</th>
+                <th>Total Quantity</th>
+                <th>Total Stock Amount</th>
+                <th>Sell</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ "%.2f"|format(item[3]) }}</td>
+                <td>{{ "%.2f"|format(item[4]) }}</td>
+                <td>{{ "%.2f"|format(item[5]) }}</td>
+                <td>
+                    <form method="POST" action="/sell/{{ item[0] }}">
+                        <input type="number" name="quantity_sold" min="0.01" step="0.01" required>
+                        <button type="submit">Sell</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+const searchInput = document.getElementById('search-input');
+const table = document.getElementById('items-table');
+const rows = Array.from(table.tBodies[0].rows);
+
+searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    rows.forEach(row => {
+        const itemName = row.cells[1].textContent.toLowerCase();
+        row.style.display = itemName.includes(query) || query === "" ? "" : "none";
+    });
+});
+</script>
+</body>
+</html>

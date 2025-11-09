@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>www.Melvinshop.co.ke</title>
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif; 
+    background-color: #f5f6fa; /* neutral background */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header container */
+.header { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    background-color: #40739e; 
+    color: white; 
+    padding: 10px 20px; 
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Left section: back button */
+.header-left {
+    flex: 1;
+}
+.header-left a { 
+    background-color: #e84118; 
+    color: white; 
+    padding: 8px 14px; 
+    border-radius: 5px; 
+    text-decoration: none; 
+}
+.header-left a:hover { 
+    background-color: #c23616; 
+}
+
+/* Center section: title */
+.header-center {
+    flex: 2;
+    text-align: center;
+}
+.header-center h1 { 
+    margin: 0; 
+    font-size: 20px; 
+}
+
+/* Right section: search bar */
+.header-right {
+    flex: 1;
+    text-align: right;
+}
+.header-right input[type="text"] {
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Table container */
+.table-container {
+    flex: 1; /* Fill remaining page height */
+    overflow-y: auto;
+}
+
+/* Table styling */
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+th, td { 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    text-align: left; 
+}
+thead th { 
+    background-color: #40739e; 
+    color: white; 
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+/* Add left padding to ITEM column */
+th:first-child, td:first-child {
+    padding-left: 20px; /* space from left edge */
+}
+
+td { 
+    background-color: white; 
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-left">
+        <a href="/">← Back to Dashboard</a>
+    </div>
+    <div class="header-center">
+        <h1>PRODUCTS SUBSTITUTES</h1>
+    </div>
+    <div class="header-right">
+        <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+</div>
+
+<div class="table-container">
+<table id="productsTable">
+    <thead>
+        <tr>
+            <th>ITEM</th>
+            <th>FREQUENCY</th>
+            <th>TOTAL QUANTITY</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item, info in data.items() %}
+        <tr>
+            <td>{{ item }}</td>
+            <td>{{ info.frequency }}</td>
+            <td>{{ "%.2f"|format(info.total_quantity) }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('keyup', function() {
+    const filter = searchInput.value.toLowerCase();
+    const table = document.getElementById('productsTable');
+    const trs = table.tBodies[0].getElementsByTagName('tr');
+
+    for (let tr of trs) {
+        let text = tr.textContent.toLowerCase();
+        tr.style.display = text.includes(filter) ? '' : 'none';
+    }
+});
+</script>
+
+</body>
+</html>
