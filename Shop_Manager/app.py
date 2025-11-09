@@ -877,6 +877,8 @@ def delete_price_variation(variation_id):
     return redirect(url_for('price_variation'))
 
 # ------------------ RUN APP ------------------
-if __name__ == '__main__':
-    init_db()
+app = Flask(__name__)
+# … your routes …
+if __name__ == "__main__":
     app.run(debug=True)
+
